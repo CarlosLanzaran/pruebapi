@@ -1,0 +1,18 @@
+<thead>
+  <tr>
+    <th>Nombre</th>
+    <th>Descripción</th>
+    <th>Acciones</th>
+  </tr>
+</thead>
+<tbody>
+  <tr *ngFor="let item of data">
+    <td>{{ item.name }}</td>
+    <td>{{ item.description }}</td>
+    <td>
+      <a [routerLink]="['/tasks/edit', item.id]" class="edit-link">
+        ✏️ Editar
+      </a>
+    </td>
+  </tr>
+</tbody>

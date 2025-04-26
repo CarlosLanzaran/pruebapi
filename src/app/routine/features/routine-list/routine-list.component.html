@@ -1,0 +1,26 @@
+<section class="list-wrapper">
+    <div class="list-box">
+      <h2 class="title">Mis rutinas</h2>
+  
+      <div *ngIf="routineService.getRoutines().length > 0; else empty">
+        <ul class="routine-list">
+          <li *ngFor="let routine of routineService.getRoutines()" class="routine-item">
+            <div>
+              <h3>{{ routine.name }}</h3>
+              <p>Ejercicios seleccionados: {{ routine.exerciseIds.length }}</p>
+            </div>
+            <a [routerLink]="['/routines/edit', routine.id]" class="edit-link">✏️ Editar</a>
+          </li>
+        </ul>
+      </div>
+  
+      <ng-template #empty>
+        <p class="no-data">Aún no has creado ninguna rutina.</p>
+      </ng-template>
+  
+      <div class="new-routine-btn">
+        <a [routerLink]="['/routines/new']" class="create-link">➕ Crear nueva rutina</a>
+      </div>
+    </div>
+  </section>
+  

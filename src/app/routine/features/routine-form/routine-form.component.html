@@ -1,0 +1,50 @@
+<section class="routine-wrapper">
+    <div class="routine-box">
+      <h2 class="title">Crear rutina</h2>
+  
+      <form [formGroup]="form" (ngSubmit)="submit()" class="form-area">
+        <div class="input-group">
+          <label for="name">Nombre de la rutina</label>
+          <input id="name" type="text" formControlName="name" placeholder="Ej. Rutina de pierna" />
+        </div>
+  
+        <div class="input-group">
+          <label>Selecciona ejercicios</label>
+          <div *ngIf="exercises().length > 0; else empty">
+            <div
+              *ngFor="let exercise of exercises()"
+              class="checkbox-item"
+              (click)="toggleExercise(exercise.id)"
+            >
+              <input
+                type="checkbox"
+                [checked]="isSelected(exercise.id)"
+                (change)="toggleExercise(exercise.id)"
+                class="checkbox"
+              />
+              <span>{{ exercise.name }} - {{ exercise.description }}</span>
+            </div>
+          </div>
+          <ng-template #empty>
+            <p class="no-data">No tienes ejercicios creados aún.</p>
+          </ng-template>
+        </div>
+  
+        <button [disabled]="loading()" type="submit" class="save-button">
+            {{ idRoutine() ? 'Guardar cambios' : 'Crear rutina' }}
+          </button>
+          @if(idRoutine()) {
+            <button
+              type="button"
+              (click)="delete()"
+              [disabled]="loading()"
+              class="mt-4 w-full text-white bg-red-600 hover:bg-red-700 focus:ring-4 focus:outline-none focus:ring-red-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-red-600 dark:hover:bg-red-700 dark:focus:ring-red-800"
+            >
+              {{ loading() ? "Eliminando..." : "Eliminar rutina" }}
+            </button>
+          }
+          
+      </form>
+    </div>
+  </section>
+  

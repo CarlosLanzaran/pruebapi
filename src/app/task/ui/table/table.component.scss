@@ -1,0 +1,65 @@
+.table-container {
+    max-width: 900px;
+    margin: 3rem auto;
+    padding: 1rem;
+    overflow-x: auto;
+  }
+  
+  table {
+    width: 100%;
+    border-collapse: collapse;
+    background-color: #1f2937;
+    border-radius: 1rem;
+    overflow: hidden;
+    box-shadow: 0 8px 16px rgba(0, 0, 0, 0.3);
+  }
+  
+  th,
+  td {
+    padding: 1rem;
+    text-align: left;
+    color: #f9fafb;
+  }
+  
+  thead {
+    background-color: #374151;
+    font-weight: 600;
+    text-transform: uppercase;
+  }
+  
+  tbody tr {
+    border-top: 1px solid #4b5563;
+  }
+  
+  tbody tr:hover {
+    background-color: #2d3748;
+  }
+  
+  .action {
+    color: #10b981;
+    font-weight: 600;
+    text-decoration: none;
+  }
+  
+  .action:hover {
+    text-decoration: underline;
+  }
+  
+
+  th,
+td {
+  padding: 1rem;
+  text-align: left;
+  color: #f9fafb;
+  white-space: nowrap;
+}
+
+.edit-link {
+  color: #10b981;
+  text-decoration: none;
+  font-weight: 600;
+}
+
+.edit-link:hover {
+  text-decoration: underline;
+}

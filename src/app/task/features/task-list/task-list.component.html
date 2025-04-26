@@ -1,0 +1,55 @@
+<section class="task-list-wrapper">
+  <!-- Sección de Ejercicios -->
+  <div class="section">
+    <div class="section-header">
+      <h2>Mis ejercicios</h2>
+      <a
+        routerLink="/tasks/new"
+        class="btn green"
+      >
+        Nuevo ejercicio
+      </a>
+    </div>
+
+    @if (tasksService.loading()) {
+      <p>Cargando ejercicios...</p>
+    } @else {
+      <ul class="exercise-list">
+        <li *ngFor="let task of tasksService.getTasks()" class="exercise-item">
+          <div>
+            <h3>{{ task.name }}</h3>
+            <p>{{ task.description }}</p>
+          </div>
+          <a [routerLink]="['/tasks/edit', task.id]" class="edit-link">✏️ Editar</a>
+        </li>
+      </ul>
+          }
+  </div>
+
+  <!-- Sección de Rutinas -->
+  <div class="section">
+    <div class="section-header">
+      <h2>Mis rutinas</h2>
+      <a
+        routerLink="/routines/new"
+        class="btn blue"
+      >
+        Crear rutina
+      </a>
+    </div>
+
+    @if (routineService.loading()) {
+      <p>Cargando rutinas...</p>
+    } @else {
+      <ul class="routine-list">
+        <li *ngFor="let routine of routineService.getRoutines()" class="routine-item">
+          <div>
+            <h3>{{ routine.name }}</h3>
+            <p>Ejercicios seleccionados: {{ routine.exerciseIds.length }}</p>
+          </div>
+          <a [routerLink]="['/routines/edit', routine.id]" class="edit-link">✏️ Editar</a>
+        </li>
+      </ul>
+    }
+  </div>
+</section>
