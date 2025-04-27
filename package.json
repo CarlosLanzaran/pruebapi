@@ -22,6 +22,7 @@
     "@fullcalendar/angular": "^6.1.17",
     "@fullcalendar/core": "^6.1.17",
     "@fullcalendar/daygrid": "^6.1.17",
+    "@fullcalendar/interaction": "^6.1.17",
     "@fullcalendar/timegrid": "^6.1.17",
     "ngx-sonner": "^2.0.2",
     "rxjs": "~7.8.0",

@@ -14,9 +14,9 @@ export const routes: Routes = [
   },
   {
     path: 'calendar',
-    loadChildren: () => import('./calendar/calendar.routes').then(m => m.default),
+    canActivateChild: [privateGuard()],
+    loadChildren: () => import('./calendar/calendar.routes').then(m => m.routes),
   },
-  
   
   
   {
