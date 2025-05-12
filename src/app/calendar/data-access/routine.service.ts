@@ -14,13 +14,11 @@ export interface Routine {
 export class RoutineService {
   private _firestore = inject(Firestore);
   private _authState = inject(AuthStateService);
-
   private _collection = collection(this._firestore, 'routines');
 
   get getRoutines() {
     const userId = this._authState.currentUser?.uid;
     if (!userId) {
-      console.warn('No user logged in');
       return toSignal(new Observable<Routine[]>(), { initialValue: [] });
     }
 

@@ -6,25 +6,31 @@ import { toast } from 'ngx-sonner';
 import { Router } from '@angular/router';
 import { NgFor, NgIf } from '@angular/common';
 
+// 🔽 IMPORTS NUEVOS
+import { Firestore, doc, getDoc } from '@angular/fire/firestore';
+import { CalendarEventService } from '../../../calendar/calendar-event.service';
+
 @Component({
   selector: 'app-routine-form',
   standalone: true,
   imports: [ReactiveFormsModule, NgFor, NgIf],
   templateUrl: './routine-form.component.html',
   styleUrl: './routine-form.component.scss',
-  providers: [RoutineService, TaskService],
+  providers: [RoutineService, TaskService, CalendarEventService],
 })
 export class RoutineFormComponent {
   private _formBuilder = inject(FormBuilder);
   private _routineService = inject(RoutineService);
   private _taskService = inject(TaskService);
   private _router = inject(Router);
+  private afs = inject(Firestore); // ✅ para acceder a firestore
+  private _calendarEventService = inject(CalendarEventService); // ✅ para borrar eventos
 
   loading = signal(false);
   selectedExercises = signal<string[]>([]);
   exercises = this._taskService.getTasks;
 
-  idRoutine = input.required<string>(); // Saber si es edición o nueva rutina
+  idRoutine = input.required<string>();
 
   form = this._formBuilder.group({
     name: this._formBuilder.control('', Validators.required),
@@ -63,17 +69,17 @@ export class RoutineFormComponent {
 
   async submit() {
     if (this.form.invalid || this.selectedExercises().length === 0) return;
-  
+
     try {
       this.loading.set(true);
-  
+
       const routine: RoutineCreate = {
         name: this.form.get('name')?.value || '',
         exerciseIds: this.selectedExercises(),
       };
-  
+
       const id = this.idRoutine();
-  
+
       if (id) {
         await this._routineService.update(routine, id);
         toast.success('Rutina actualizada correctamente.');
@@ -81,24 +87,38 @@ export class RoutineFormComponent {
         await this._routineService.create(routine);
         toast.success('Rutina creada correctamente.');
       }
-  
-      this._router.navigateByUrl('/tasks'); // <<< CAMBIADO A /tasks
+
+      this._router.navigateByUrl('/tasks');
     } catch (error) {
       toast.error('Ocurrió un problema.');
     } finally {
       this.loading.set(false);
     }
   }
+
   async delete() {
     const id = this.idRoutine();
     if (!id) return;
-  
+
     const confirmDelete = window.confirm('¿Estás seguro de eliminar esta rutina?');
     if (!confirmDelete) return;
-  
+
     try {
       this.loading.set(true);
+
+      // 🔍 Obtener el nombre de la rutina antes de borrarla
+      const docRef = doc(this.afs, `routines/${id}`);
+      const snapshot = await getDoc(docRef);
+      const nombre = snapshot.data()?.['name'];
+
+      // 🗑️ Eliminar la rutina
       await this._routineService.delete(id);
+
+      // ❌ Eliminar eventos del calendario relacionados
+      if (nombre) {
+        await this._calendarEventService.deleteEventsByRoutineTitle(nombre);
+      }
+
       toast.success('Rutina eliminada correctamente.');
       this._router.navigateByUrl('/tasks');
     } catch (error) {
@@ -107,5 +127,4 @@ export class RoutineFormComponent {
       this.loading.set(false);
     }
   }
-  
 }

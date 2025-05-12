@@ -23,8 +23,7 @@ export class CalendarPageComponent {
   routines = this._routineService.getRoutines;
   selectedDate = signal<string>('');
   showModal = signal(false);
-
-  eventsList = signal<any[]>([]);  // 👈 Aquí llevamos todos los eventos cargados
+  eventsList = signal<any[]>([]);
 
   calendarOptions: CalendarOptions = {
     plugins: [dayGridPlugin, timeGridPlugin, interactionPlugin],
@@ -38,7 +37,8 @@ export class CalendarPageComponent {
     editable: true,
     weekends: true,
     dateClick: (arg) => this.onDateClick(arg),
-    events: this.eventsList(), // 👈 Aquí ponemos nuestro array controlado
+    eventDrop: (info) => this.onEventDrop(info),
+    events: this.eventsList(),
   };
 
   constructor() {
@@ -51,52 +51,85 @@ export class CalendarPageComponent {
   }
 
   async addRoutineToCalendar(routine: Routine) {
-    if (!this.selectedDate()) return;
+    const fecha = this.selectedDate();
+    if (!fecha) return;
 
     try {
-      await this._calendarEventService.add({
+      // Evitar duplicados si ya está esa rutina ese día
+      const yaExiste = this.eventsList().some(ev => ev.title === routine.name && ev.start === fecha);
+      if (yaExiste) {
+        alert('Esa rutina ya está añadida para este día');
+        return;
+      }
+
+      const added = await this._calendarEventService.add({
         title: routine.name,
-        date: this.selectedDate(),
+        date: fecha,
         completed: false,
       });
 
-      // 👇 Añadimos también en nuestro array local
       this.eventsList.update(events => [
         ...events,
         {
+          id: added.id,
           title: routine.name,
-          start: this.selectedDate(),
+          start: fecha,
           allDay: true,
         }
       ]);
 
-      // 👇 Actualizamos los eventos del calendario
-      this.calendarOptions.events = this.eventsList();
+      this.calendarOptions.events = [...this.eventsList()];
+      this.showModal.set(false);
+      this.selectedDate.set('');
     } catch (error) {
       console.error('Error añadiendo evento:', error);
     }
+  }
 
-    this.showModal.set(false);
-    this.selectedDate.set('');
+  async quitarRutina(routineTitle: string) {
+    try {
+      const userId = this._calendarEventService.getUserId();
+      const fecha = this.selectedDate();
+      await this._calendarEventService.deleteRoutineFromDate(routineTitle, fecha, userId);
+
+      this.eventsList.update(events =>
+        events.filter(ev => !(ev.title === routineTitle && ev.start === fecha))
+      );
+
+      this.calendarOptions.events = [...this.eventsList()];
+    } catch (error) {
+      console.error('Error al eliminar rutina del calendario:', error);
+    }
+  }
+
+  async onEventDrop(info: any) {
+    const event = info.event;
+    const newDate = event.startStr;
+
+    try {
+      await this._calendarEventService.updateDate(event.id, newDate);
+    } catch (error) {
+      console.error('Error al actualizar evento:', error);
+      info.revert();
+    }
   }
 
   async loadCalendarEvents() {
     try {
       const allEvents = await this._calendarEventService.getEvents();
-      const userId = this._calendarEventService.getCurrentUserId();
+      const userId = this._calendarEventService.getUserId();
 
       const userEvents = allEvents.filter(event => event.userId === userId);
 
-      // 👇 Rellenamos nuestro array
       this.eventsList.set(
         userEvents.map(event => ({
+          id: event.id,
           title: event.title,
           start: event.date,
           allDay: true,
         }))
       );
 
-      // 👇 Y actualizamos lo que ve el calendario
       this.calendarOptions.events = this.eventsList();
     } catch (error) {
       console.error('Error cargando eventos:', error);
