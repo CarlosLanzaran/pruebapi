@@ -70,4 +70,9 @@ export class CalendarEventService {
   getUserId(): string {
     return this._authState.currentUser?.uid || '';
   }
+async toggleCompleted(eventId: string, newState: boolean) {
+  const docRef = doc(this._firestore, 'calendar-events', eventId);
+  await updateDoc(docRef, { completed: newState });
+}
+  
 }

@@ -19,6 +19,7 @@ export interface Routine {
   id: string;
   name: string;
   exerciseIds: string[];
+  completada?: boolean;
 }
 
 export type RoutineCreate = Omit<Routine, 'id'>;
