@@ -1,65 +1,161 @@
 .table-container {
-    max-width: 900px;
-    margin: 3rem auto;
-    padding: 1rem;
-    overflow-x: auto;
-  }
+  max-width: 1000px;
+  margin: 3rem auto;
+  padding: 2rem;
+  overflow-x: auto;
+  background: linear-gradient(135deg, #0f172a 0%, #1a2a3a 100%);
+  border-radius: 20px;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
   
   table {
     width: 100%;
-    border-collapse: collapse;
-    background-color: #1f2937;
-    border-radius: 1rem;
+    border-collapse: separate;
+    border-spacing: 0;
+    background: rgba(30, 41, 59, 0.9);
+    backdrop-filter: blur(10px);
+    border-radius: 16px;
     overflow: hidden;
-    box-shadow: 0 8px 16px rgba(0, 0, 0, 0.3);
-  }
-  
-  th,
-  td {
-    padding: 1rem;
-    text-align: left;
-    color: #f9fafb;
+    box-shadow: 
+      0 10px 25px rgba(0, 0, 0, 0.4),
+      inset 0 1px 1px rgba(255, 255, 255, 0.1);
+    border: 1px solid rgba(56, 189, 248, 0.2);
+    transition: transform 0.3s ease;
+    
+    &:hover {
+      transform: translateY(-5px);
+    }
   }
   
   thead {
-    background-color: #374151;
-    font-weight: 600;
-    text-transform: uppercase;
+    background: linear-gradient(90deg, rgba(56, 189, 248, 0.3) 0%, rgba(59, 130, 246, 0.3) 100%);
+    
+    th {
+      padding: 1.25rem 1.5rem;
+      color: #38bdf8;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      font-size: 0.95rem;
+      position: relative;
+      
+      &:not(:last-child)::after {
+        content: '';
+        position: absolute;
+        right: 0;
+        top: 50%;
+        transform: translateY(-50%);
+        height: 60%;
+        width: 1px;
+        background: rgba(56, 189, 248, 0.5);
+      }
+    }
   }
   
-  tbody tr {
-    border-top: 1px solid #4b5563;
+  tbody {
+    tr {
+      transition: all 0.3s ease;
+      border-top: 1px solid rgba(56, 189, 248, 0.1);
+      
+      &:hover {
+        background: rgba(56, 189, 248, 0.1);
+        transform: translateX(5px);
+      }
+      
+      &:first-child {
+        border-top: none;
+      }
+    }
+    
+    td {
+      padding: 1.25rem 1.5rem;
+      color: #f8fafc;
+      font-weight: 500;
+      white-space: nowrap;
+      position: relative;
+      
+      &::before {
+        content: '';
+        position: absolute;
+        left: 0;
+        top: 0;
+        height: 100%;
+        width: 3px;
+        background: transparent;
+        transition: all 0.3s ease;
+      }
+    }
+    
+    tr:hover td::before {
+      background: linear-gradient(to bottom, #38bdf8, #3b82f6);
+    }
   }
   
-  tbody tr:hover {
-    background-color: #2d3748;
-  }
-  
+  .edit-link,
   .action {
-    color: #10b981;
-    font-weight: 600;
+    color: #38bdf8;
+    font-weight: 700;
     text-decoration: none;
+    padding: 0.5rem 1rem;
+    border-radius: 8px;
+    background: rgba(56, 189, 248, 0.1);
+    border: 1px solid rgba(56, 189, 248, 0.3);
+    transition: all 0.3s ease;
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    
+    &:hover {
+      background: rgba(56, 189, 248, 0.2);
+      text-decoration: none;
+      transform: translateY(-2px);
+      box-shadow: 0 4px 10px rgba(56, 189, 248, 0.2);
+    }
+    
+    &::after {
+      content: '→';
+      font-weight: bold;
+      transition: transform 0.3s ease;
+    }
+    
+    &:hover::after {
+      transform: translateX(3px);
+    }
   }
-  
-  .action:hover {
-    text-decoration: underline;
-  }
-  
-
-  th,
-td {
-  padding: 1rem;
-  text-align: left;
-  color: #f9fafb;
-  white-space: nowrap;
 }
 
-.edit-link {
-  color: #10b981;
-  text-decoration: none;
-  font-weight: 600;
+// Efecto de borde animado para filas
+@keyframes rowHighlight {
+  0% { box-shadow: inset 0 0 0 0 rgba(56, 189, 248, 0); }
+  100% { box-shadow: inset 5px 0 0 0 rgba(56, 189, 248, 0.5); }
 }
 
-.edit-link:hover {
-  text-decoration: underline;
+tbody tr:hover {
+  animation: rowHighlight 0.5s ease forwards;
+}
+
+// Scrollbar personalizado para la tabla
+.table-container::-webkit-scrollbar {
+  height: 8px;
+}
+
+.table-container::-webkit-scrollbar-track {
+  background: rgba(15, 23, 42, 0.5);
+  border-radius: 10px;
+}
+
+.table-container::-webkit-scrollbar-thumb {
+  background: linear-gradient(90deg, #38bdf8 0%, #3b82f6 100%);
+  border-radius: 10px;
+}
+
+// Estilos responsivos
+@media (max-width: 768px) {
+  .table-container {
+    padding: 1rem;
+    margin: 1.5rem auto;
+    
+    table {
+      min-width: 600px;
+    }
+  }
 }

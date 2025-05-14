@@ -24,7 +24,7 @@ export interface CalendarEvent {
 
 export type CalendarEventCreate = Omit<CalendarEvent, 'id'>;
 
-@Injectable()
+@Injectable({ providedIn: 'root' })
 export class CalendarEventService {
   private _firestore = inject(Firestore);
   private _authState = inject(AuthStateService);
@@ -74,5 +74,32 @@ async toggleCompleted(eventId: string, newState: boolean) {
   const docRef = doc(this._firestore, 'calendar-events', eventId);
   await updateDoc(docRef, { completed: newState });
 }
-  
+  async getCompletedRoutinesByMonth(year: number, month: number) {
+  const userId = this.getUserId();
+  const all = await this.getEvents();
+
+  return all.filter(event => {
+    const date = new Date(event.date);
+    return (
+      event.userId === userId &&
+      event.completed &&
+      date.getFullYear() === year &&
+      date.getMonth() === month
+    );
+  });
+}
+
+async getCompletedRoutinesByYear(year: number) {
+  const userId = this.getUserId();
+  const all = await this.getEvents();
+
+  return all.filter(event => {
+    const date = new Date(event.date);
+    return (
+      event.userId === userId &&
+      event.completed &&
+      date.getFullYear() === year
+    );
+  });
+}
 }

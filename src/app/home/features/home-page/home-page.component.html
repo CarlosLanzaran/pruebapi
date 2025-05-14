@@ -1,0 +1,34 @@
+<div class="text-white p-6 max-w-4xl mx-auto space-y-8">
+  <h1 class="text-4xl font-bold text-center">Resumen de Actividad</h1>
+
+  <div class="flex justify-center gap-4">
+    <div>
+      <label class="block mb-1 text-lg">Mes:</label>
+<select (change)="onChangeMonth($event)">
+        <option *ngFor="let name of months; let i = index" [value]="i" [selected]="i === selectedMonth()">{{ name }}</option>
+      </select>
+    </div>
+
+    <div>
+      <label class="block mb-1 text-lg">Año:</label>
+<select (change)="onChangeYear($event)">
+        <option *ngFor="let y of [currentYear - 1, currentYear, currentYear + 1]" [value]="y" [selected]="y === selectedYear()">
+          {{ y }}
+        </option>
+      </select>
+    </div>
+  </div>
+
+  <div class="bg-gray-800 p-6 rounded-xl shadow-xl">
+    <h2 class="text-2xl font-semibold mb-4">📆 Rutinas completadas este mes</h2>
+    <p *ngIf="completedThisMonth().length === 0" class="text-gray-400">No has completado ninguna rutina este mes.</p>
+    <ul *ngIf="completedThisMonth().length > 0" class="list-disc pl-5 space-y-1">
+      <li *ngFor="let r of completedThisMonth()">{{ r.title }} ({{ r.date | date:'dd/MM/yyyy' }})</li>
+    </ul>
+  </div>
+
+  <div class="bg-gray-800 p-6 rounded-xl shadow-xl">
+    <h2 class="text-2xl font-semibold mb-4">📅 Total del año</h2>
+    <p class="text-xl">{{ completedThisYear().length }} rutina(s) completadas en {{ selectedYear() }}</p>
+  </div>
+</div>
