@@ -4,20 +4,7 @@
   <full-calendar [options]="calendarOptions"></full-calendar>
 </div>
 
-<!-- Lista de rutinas con checkbox -->
-<div *ngIf="selectedDate()" class="mt-8 bg-white p-6 rounded-xl shadow">
-  <h3 class="text-xl font-bold mb-4 text-gray-800">Rutinas para {{ selectedDate() }}</h3>
-  <ul class="space-y-3">
-    <li *ngFor="let ev of filteredEvents()"
-        class="flex items-center justify-between p-3 rounded-md"
-        [ngClass]="ev.completed ? 'bg-green-100 text-green-800 line-through' : 'bg-gray-100 text-gray-800'">
-      <label class="flex items-center gap-3 cursor-pointer">
-        <input type="checkbox" [checked]="ev.completed" (change)="toggleCompleted(ev.id)" />
-        <span class="font-medium">{{ ev.title }}</span>
-      </label>
-    </li>
-  </ul>
-</div>
+
 
 <!-- Modal para añadir rutina -->
 <div *ngIf="showModal()" class="fixed inset-0 flex items-center justify-center bg-black bg-opacity-70 z-50">

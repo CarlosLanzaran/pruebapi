@@ -20,15 +20,43 @@
   </div>
 
   <div class="bg-gray-800 p-6 rounded-xl shadow-xl">
-    <h2 class="text-2xl font-semibold mb-4">📆 Rutinas completadas este mes</h2>
-    <p *ngIf="completedThisMonth().length === 0" class="text-gray-400">No has completado ninguna rutina este mes.</p>
-    <ul *ngIf="completedThisMonth().length > 0" class="list-disc pl-5 space-y-1">
-      <li *ngFor="let r of completedThisMonth()">{{ r.title }} ({{ r.date | date:'dd/MM/yyyy' }})</li>
-    </ul>
-  </div>
+<h2 class="text-2xl font-semibold mb-4">
+  📆 Rutinas completadas este mes ({{ totalCompletedThisMonth() }})
+</h2>
+
+   <p *ngIf="completedThisMonth().length === 0" class="text-gray-400">No has completado ninguna rutina este mes.</p>
+  <ul *ngIf="completedThisMonth().length > 0" class="list-disc pl-5 space-y-1">
+    <li *ngFor="let r of completedThisMonth()">{{ r.title }} × {{ r.count }}</li>
+  </ul>
+</div>
 
   <div class="bg-gray-800 p-6 rounded-xl shadow-xl">
     <h2 class="text-2xl font-semibold mb-4">📅 Total del año</h2>
     <p class="text-xl">{{ completedThisYear().length }} rutina(s) completadas en {{ selectedYear() }}</p>
   </div>
+
+  <div class="bg-gray-800 p-6 rounded-xl shadow-xl mt-10">
+  <h2 class="text-2xl font-semibold mb-4 text-white">🏆 Top 3 rutinas del año</h2>
+
+  <ng-container *ngIf="getTop3RoutinesThisYear().length > 0; else noDataTop">
+    <ol class="list-decimal ml-6 space-y-2 text-white text-lg">
+      <li *ngFor="let r of getTop3RoutinesThisYear(); let i = index">
+        <span *ngIf="i === 0">🥇</span>
+        <span *ngIf="i === 1">🥈</span>
+        <span *ngIf="i === 2">🥉</span>
+        {{ r.title }} — {{ r.count }} veces
+      </li>
+    </ol>
+  </ng-container>
+
+  <ng-template #noDataTop>
+    <p class="text-gray-400">No hay datos suficientes aún para mostrar el top 3.</p>
+  </ng-template>
+</div>
+
+  <app-monthly-routine-chart [data]="completedThisMonth()"></app-monthly-routine-chart>
+  <app-yearly-routine-chart [data]="completedPerMonth()"></app-yearly-routine-chart>
+  <app-routine-pie-chart [data]="completedThisMonth()"></app-routine-pie-chart>
+  <app-monthly-heatmap [activeDates]="activeDatesThisMonth()"></app-monthly-heatmap>
+
 </div>
